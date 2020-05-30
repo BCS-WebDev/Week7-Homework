@@ -8,9 +8,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.19.2",
+    "choosealicense-list": "^1.2.0",
     "dotenv": "^8.0.0",
     "inquirer": "^6.5.2"
   },
+  "devDependencies": {},
   "description": ""
 }

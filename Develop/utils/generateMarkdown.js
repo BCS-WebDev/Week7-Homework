@@ -1,35 +1,38 @@
+
 function generateMarkdown(data) {
-  return `
-    # ${data.title}
+    // trim data here
 
-    ## Badges
-    ${data.badges}
+    return `
+        # ${data.title}
 
-    ## Description
-    ${data.description}
+        ${data.badges.join('\n')}
 
-    ## Contents
-    ${data.contents}
+        ## Description
+        ${data.description}
 
-    ## Installation
-    ${data.installation}
+        ## Contents
+        ${data.contents}
+        * [Installation](#installation)
 
-    ## Usage
-    ${data.usage}
+        ## Installation
+        ${data.installation}
 
-    ## License
-    ${data.license}
+        ## Usage
+        ${data.usage}
 
-    ## Contributors
-    ${data.contributors}
+        ## License
+        ${data.license}
 
-    ## Test
-    ${data.test}
+        ## Contributors
+        ${data.contributor}
 
-    ## Questions
-    ${data.questions[0]}
-    ${data.questions[1]}
-    `;
+        ## Test
+        ${data.test}
+
+        ## Questions
+        ![Profile Picture](${data.questions[0]})
+        ${data.questions[1]}
+        `;
 }
 
 module.exports = generateMarkdown;
