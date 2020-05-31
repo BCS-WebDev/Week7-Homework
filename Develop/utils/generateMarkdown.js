@@ -1,6 +1,5 @@
 
 function generateMarkdown(data) {
-    // trim data here
 
     return `
         # ${data.title}
@@ -11,8 +10,12 @@ function generateMarkdown(data) {
         ${data.description}
 
         ## Contents
-        ${data.contents}
         * [Installation](#installation)
+        * [Usage](#usage)
+        * [License](#license)
+        * [Contributors](#contributors)
+        * [Test](#test)
+        * [Questions](#questions)
 
         ## Installation
         ${data.installation}
@@ -21,7 +24,7 @@ function generateMarkdown(data) {
         ${data.usage}
 
         ## License
-        ${data.license}
+        See the license [here](LICENSE.txt).
 
         ## Contributors
         ${data.contributor}
@@ -31,7 +34,7 @@ function generateMarkdown(data) {
 
         ## Questions
         ![Profile Picture](${data.questions[0]})
-        ${data.questions[1]}
+        Contact: ${data.questions[1]}
         `;
 }
 

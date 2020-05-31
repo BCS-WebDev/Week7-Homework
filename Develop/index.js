@@ -19,11 +19,11 @@ const questions = [
         message: "Enter a project description.",
         name: "description"
     },
-    {
-        type: "input",
-        message: "Enter the table of contents.",
-        name: "contents"
-    },
+    // {
+    //     type: "input",
+    //     message: "Enter the table of contents.",
+    //     name: "contents"
+    // },
     {
         type: "input",
         message: "Enter info about installation.",
@@ -73,94 +73,143 @@ const badgePrompt = [
     }
 ];
 
-function getUser(user, userInfo) {
-    inquirer.prompt({
-        type: "input",
-        message: "Enter your GitHub username.",
-        name: "username"
-    }).then(function(response) {
-        user = githubAPI.getUser(response.username);
-    }).then(function() {
+async function getUser(userInfo) {
+    console.log("User.");
+    try {
+        const {username} = await inquirer.prompt({
+            type: "input",
+            message: "Enter your GitHub username.",
+            name: "username"
+        });
+
+        const user = await githubAPI.getUser(username);
+
         if (user) {
             userInfo.push(user.avatar_url);
             userInfo.push(user.email);
         } else {
-            getUser(user, userInfo);
+            getUser(userInfo);
         }
-    });
+
+    } catch (err) {
+        console.log(err);
+    }
+    // inquirer.prompt({
+    //     type: "input",
+    //     message: "Enter your GitHub username.",
+    //     name: "username"
+    // }).then(function(response) {
+    //     const user = githubAPI.getUser(response.username);
+    // }).then(function() {
+    //     if (user) {
+    //         userInfo.push(user.avatar_url);
+    //         userInfo.push(user.email);
+    //     } else {
+    //         getUser(userInfo);
+    //     }
+    // });
 }
 
-function addBadges(badges) {
-    inquirer.prompt(badgePrompt).then(function(response) {
+async function addBadges(badges) {
+    console.log("Badges.");
+    try {
+        const {label, message, color} = await inquirer.prompt(badgePrompt);
         if (response.label === "" || response.message === "") {
             console.log("Error: Label or message missing.");
         } else {
             badges.push(`[![${response.label}](https://img.shields.io/static/v1?label=
                             ${response.label}&message=${response.message}&color=${response.color})]`);
         }
-    }).then(function() {
+
         if (badges.length > 0) {
-            inquirer.prompt({
+            const {answer} = await inquirer.prompt({
                 type: "Confirm",
                 message: "Add another badge?",
                 name: "answer"
-            }).then(function(response) {
-                if (response.answer === "true") {
-                    addBadges(badges);
-                } else {
-                    return;
-                }
             });
+
+            if (response.answer === "true") {
+                addBadges(badges);
+            } else {
+                return;
+            }
+
         } else {
             console.log("Add at least one badge.");
             addBadges(badges);
         }
-    });
+
+    } catch (err) {
+        console.log(err);
+    }
+    // inquirer.prompt(badgePrompt).then(function(response) {
+    //     if (response.label === "" || response.message === "") {
+    //         console.log("Error: Label or message missing.");
+    //     } else {
+    //         badges.push(`[![${response.label}](https://img.shields.io/static/v1?label=
+    //                         ${response.label}&message=${response.message}&color=${response.color})]`);
+    //     }
+    // }).then(function() {
+    //     if (badges.length > 0) {
+    //         inquirer.prompt({
+    //             type: "Confirm",
+    //             message: "Add another badge?",
+    //             name: "answer"
+    //         }).then(function(response) {
+    //             if (response.answer === "true") {
+    //                 addBadges(badges);
+    //             } else {
+    //                 return;
+    //             }
+    //         });
+    //     } else {
+    //         console.log("Add at least one badge.");
+    //         addBadges(badges);
+    //     }
+    // });
 }
 
-function getLicense(badges, license) {
-    switch(license) {
-        case "I need to work in a community.":
-            fs.writeFile("LICENSE.txt", 
-                "Use the license preferred by the community you’re contributing to or depending on at https://choosealicense.com.",
-                (err) => {
-                    if (err) throw err;
-                }
-            );
+async function getLicense(badges, license) {
+    console.log("License.");
+    try {
+        switch(license) {
+            case "I need to work in a community.":
+                await fs.writeFile("LICENSE.txt", "Use the license preferred by the community you’re contributing to or depending on at https://choosealicense.com.");
 
-            break;
+                break;
+            case "I want it simple and permissive.":
+                await fs.writeFile("LICENSE.txt", choosealicense.MIT.body);
+                badges.push(`[![License](https://img.shields.io/static/v1?label=license&message=MIT&color=green)](LICENSE.txt)`);
+                
+                break;
+            case "I care about sharing and improvements.":
+                await fs.writeFile("LICENSE.txt", choosealicense["GPL-3.0"].body);
+                badges.push(`[![License](https://img.shields.io/static/v1?label=license&message=GPL-3.0&color=green)](LICENSE.txt)`);
+                
+                break;
+            case "My project isn't software.":
+                await fs.writeFile("LICENSE.txt", choosealicense.Unlicense.body);  
+                badges.push(`[![License](https://img.shields.io/static/v1?label=license&message=Unlicense&color=green)](LICENSE.txt)`);
+                
+                break;
+            default:
+                await fs.writeFile("LICENSE.txt","Visit https://choosealicense.com to add a license.");
 
-        case "I want it simple and permissive.":
-            fs.writeFile("LICENSE.txt", choosealicense.MIT.body, (err) => {
-                if (err) throw err;
-            });
-            
-            badges.push(`[![License](https://img.shields.io/static/v1?label=license&message=MIT&color=green)](LICENSE.txt)`);
-            break;
+                break;
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-        case "I care about sharing and improvements.":
-            fs.writeFile("LICENSE.txt", choosealicense["GPL-3.0"].body, (err) => {
-                if (err) throw err;
-            });
-            
-            badges.push(`[![License](https://img.shields.io/static/v1?label=license&message=GPL-3.0&color=green)](LICENSE.txt)`);
-            break;
-
-        case "My project isn't software.":
-            fs.writeFile("LICENSE.txt", choosealicense.Unlicense.body, (err) => {
-                if (err) throw err;
-            });
-            
-            badges.push(`[![License](https://img.shields.io/static/v1?label=license&message=Unlicense&color=green)](LICENSE.txt)`);
-            break;
-
-        default:
-            fs.writeFile("LICENSE.txt",
-                "Visit https://choosealicense.com to add a license.",
-                (err) => {
-                    if (err) throw err;
-                }
-            );
+async function getCovGen(badges, userEmail) {
+    console.log("Cov gen.");
+    try {
+        await exec(`covgen ${userEmail} CODE_OF_CONDUCT.md`);
+        
+        badges.push(`[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)`); 
+    } catch (err) {
+        console.log(err);
     }
 }
 
@@ -174,9 +223,8 @@ function writeToFile(fileName, data) {
 }
 
 function init() {
-    var user;
     const userInfo = [];
-    getUser(user, userInfo);
+    getUser(userInfo);
     
     const badges = [];
     addBadges(badges);
@@ -185,27 +233,37 @@ function init() {
         getLicense(badges, response.license);
 
         if (response.contributor === "default") {
-            exec(`covgen ${userInfo[1]} CODE_OF_CONDUCT.MD`, (error, stdout, stderr) => {
-                if (error) {
-                    console.log(`error: ${error.message}`);
-                    return;
-                }
-                if (stderr) {
-                    console.log(`stderr: ${stderr}`);
-                    return;
-                }
-
-                console.log(`stdout: ${stdout}`);
-                console.log("Fetching contributor covenant.");
-
-                badges.push(`[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)`); 
-                
-                response["questions"] = userInfo;
-                response["badges"] = badges;
-
-                writeToFile("README.md", response);
-            });
+            response.contributor = `See the contributor covenant [here](CODE_OF_CONDUCT.txt).`;
+            getCovGen(badges, userInfo[1]);
         }
+
+        response["questions"] = userInfo;
+        response["badges"] = badges;
+
+        writeToFile("README.md", response);
+
+        // if (response.contributor === "default") {
+        //     exec(`covgen ${userInfo[1]} CODE_OF_CONDUCT.MD`, (error, stdout, stderr) => {
+        //         if (error) {
+        //             console.log(`error: ${error.message}`);
+        //             return;
+        //         }
+        //         if (stderr) {
+        //             console.log(`stderr: ${stderr}`);
+        //             return;
+        //         }
+
+        //         console.log(`stdout: ${stdout}`);
+        //         console.log("Fetching contributor covenant.");
+
+        //         badges.push(`[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)`); 
+                
+                // response["questions"] = userInfo;
+                // response["badges"] = badges;
+
+                // writeToFile("README.md", response);
+        //     });
+        // }
     });
 }
 

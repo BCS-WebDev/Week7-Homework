@@ -5,4 +5,4 @@ BootCampSpot Web Development - Week 6 Homework
 * Install axios package
 * Install choosealicense package
 * Install contributor covenant package
-* Using shields for badges from https://shields.io/
+* Using badges from https://shields.io/
