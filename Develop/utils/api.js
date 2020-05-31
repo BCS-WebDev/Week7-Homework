@@ -1,17 +1,14 @@
 
-const axios = require('axios');
+const axios = require('axios');   // load axios module
 
-const api = {
-    getUser(username) {
-        return axios.get("https://api.github.com/users/" + username);
-        // .then(function(response) {
-        //     // console.log("User get.")
-        //     return response;
-        // }).catch(function (error) {
-        //     console.log("Error: User not found.")
-        //     return null;
-        // });
+/* object method is used in an async function
+    - does not have a 'then' function
+    - errors caught by try-catch
+*/
+const api = {    // object
+    getUser(username) {      // object method to get username 
+        return axios.get("https://api.github.com/users/" + username);   // github api ajax request
     }
 };
 
-module.exports = api;
+module.exports = api;    // export api object
