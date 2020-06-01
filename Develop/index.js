@@ -75,10 +75,10 @@ async function getUser(userInfo) {   // pass emtpy object to gather data
     try {
         const {username} = await inquirer.prompt({  // await username input
             type: "input",
-            message: "Enter your GitHub username.",
+            message: "Enter your GitHub username:",
             name: "username"
         });
-
+        
         const {data} = await githubAPI.getUser(username);   // get user via axios & github api
 
         if (data) {    // if success (data != null)
@@ -153,6 +153,8 @@ async function getLicense(badges, license) {   // pass badges array & license us
 
                 break;
         }
+
+        console.log("LICENSE.txt generated.");
     } catch (err) {
         console.log(err);   // log error if error caught
     }
@@ -162,7 +164,8 @@ async function getLicense(badges, license) {   // pass badges array & license us
 async function getCovGen(badges, userEmail) {  // pass badge & github user email
     try {
         await exec(`covgen ${userEmail} CODE_OF_CONDUCT.md`);   // await fetch contributor convenant
-        
+        console.log("CODE_OF_CONDUCT.md generated.");
+
         // push contributo covenant badge
         badges.push(`[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)`); 
     } catch (err) {
@@ -175,8 +178,8 @@ function writeToFile(fileName, data) {
     const markdownToAppend = markdown(data);  // generate markdown
 
     fs.writeFile(fileName, markdownToAppend, function(err) {   // write markdown to file
-        if (err) { console.log("Error."); }   // log error if error 
-        else { console.log("README.md generated."); }   // log if success
+        if (err) { console.log("Error."); }    // log error if error 
+        console.log("README.md generated.");   // log if success
     });
 }
 
