@@ -99,7 +99,7 @@ async function addBadges(badges) {  // pass badge array
         if (label === "" || message === "") {    // if any input is empty
             console.log("Error: Label or message missing.");  // dont push
         } else {    // else push badge
-            badges.push(`[![${label}](https://img.shields.io/static/v1?label=${label}&message=${message}&color=${color})]`);
+            badges.push(`![${label}](https://img.shields.io/static/v1?label=${label}&message=${message}&color=${color})`);
         }
 
         if (badges.length > 0) {     // if badge array has at least one element
