@@ -1,5 +1,7 @@
 # README Generator
-BootCampSpot Web Development - Week 7 Homework 
+BootCampSpot Web Development - Week 7 Homework
+
+![Preview](https://github.com/BCS-WebDev/Week7-Homework/blob/master/Assets/ReadmeGenerator-min.gif)
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/static/v1?label=license&message=Unlicense&color=green)](LICENSE.txt)
@@ -41,8 +43,6 @@ Install `node.js` and run `npm install` under the Develop directory to install t
 
 ## Usage
 Run `node index.js` from the Develop directory and answer the following prompts.
-
-![Usage](Usage.png)
 
 * Generates:
     - READMD.md
